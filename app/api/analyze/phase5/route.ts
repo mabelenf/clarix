@@ -8,15 +8,9 @@ const client = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
 })
 
-const SYSTEM_PROMPT = `You are Clarix, a business process analyst. Identify the most important gaps between AS-IS and TO-BE.
-
-Return ONLY valid JSON parseable by JSON.parse(). No preamble, no markdown fences.
-
-Schema: {"gaps":[{"id":"gap-1","name":"string (max 6 words, e.g. 'No standard approval workflow')","actionTitle":"string (max 8 words, verb-first, e.g. 'Implement standard approval workflow')","category":"People"|"Process"|"Technology"|"Culture"|"External","impact":"High"|"Medium"|"Low","effort":"High"|"Medium"|"Low","cost":"High"|"Medium"|"Low","classification":"Quick Win"|"Strategic"|"Low Priority"|"Reconsider","explanation":"string (max 15 words)","impactReason":"string (max 15 words)","effortReason":"string (max 15 words)","costReason":"string (max 15 words)"}]}
-
-Classification: Quick Win=High/Medium impact+Low effort. Strategic=High impact+Medium/High effort. Low Priority=Low impact. Reconsider=Low/Medium impact+High effort.
-
-Rules: Return 5–8 gaps. Use specific names. Skip off-limits items. Spread across categories. Impact=contribution to goals. Effort=time+complexity. Cost=financial cost.`
+const SYSTEM_PROMPT = `Return ONLY a JSON object. No text outside JSON.
+{"gaps":[{"id":"gap-1","name":"6 words max","actionTitle":"verb-first 8 words max","category":"People|Process|Technology|Culture|External","impact":"High|Medium|Low","effort":"High|Medium|Low","cost":"High|Medium|Low","classification":"Quick Win|Strategic|Low Priority|Reconsider","explanation":"10 words max","impactReason":"8 words max","effortReason":"8 words max","costReason":"8 words max"}]}
+Max 6 gaps. Quick Win=High/Medium impact+Low effort. Strategic=High impact+Medium/High effort. Skip off-limits items.`
 
 function formatPayload(body: Record<string, unknown>): string {
   const lines: string[] = []
@@ -75,7 +69,7 @@ export async function POST(request: Request) {
   try {
     const message = await client.messages.create({
       model: 'claude-sonnet-4-6',
-      max_tokens: 1000,
+      max_tokens: 600,
       system: SYSTEM_PROMPT,
       messages: [{ role: 'user', content: userMessage }],
     })

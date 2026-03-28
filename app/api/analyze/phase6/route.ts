@@ -8,50 +8,9 @@ const client = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
 })
 
-const SYSTEM_PROMPT = `You are Clarix, a business process analyst. Generate a concrete action plan based on the gap analysis provided.
-
-Return ONLY a valid JSON object — no preamble, no explanation, no markdown code fences. The output must be parseable by JSON.parse().
-
-Schema:
-{
-  "actions": [
-    {
-      "gapId": "gap-1",
-      "gapName": "string (the problem, e.g. 'No standard approval workflow')",
-      "actionTitle": "string (max 8 words, starts with a verb, e.g. 'Implement standard approval workflow')",
-      "category": "People" | "Process" | "Technology" | "Culture" | "External",
-      "classification": "Quick Win" | "Strategic" | "Low Priority" | "Reconsider",
-      "problemStatement": "string (1 sentence — what is broken and why it matters)",
-      "recommendation": "string (1–2 sentences — what to do)",
-      "responsibleRole": "string (job title or team, not a person's name)",
-      "steps": ["string", ...],
-      "timeline": "string (e.g. 'Week 1–2', 'Month 1', 'Month 2–3')",
-      "expectedBenefit": "string (1 sentence — concrete outcome)",
-      "kpi": "string (one measurable metric, e.g. '20% reduction in approval time')"
-    }
-  ],
-  "changeManagement": {
-    "keyStakeholders": ["string", ...],
-    "resistanceItems": [
-      {
-        "stakeholder": "string",
-        "concern": "string (short phrase)",
-        "response": "string (short phrase — how to address it)"
-      }
-    ],
-    "communicationPlan": ["string", ...]
-  }
-}
-
-Rules:
-- Include one action per gap. Do NOT skip any gap.
-- steps: max 5 items. Each step is a short imperative phrase (e.g. "Assign process owner", "Document current workflow").
-- Quick Win actions come first in the array, then Strategic, then others.
-- keyStakeholders: list 3–5 roles most affected by or needed for the changes.
-- resistanceItems: 2–4 items. Focus on the most likely sources of pushback.
-- communicationPlan: exactly 3 bullets. Each bullet is one short phrase describing a communication action (e.g. "Send kick-off email to all team leads").
-- Respect all constraints and off-limits items from the input.
-- Be specific — use the actual context from the user's data, not generic advice.`
+const SYSTEM_PROMPT = `Return ONLY a JSON object. No text outside JSON.
+{"actions":[{"gapId":"gap-1","gapName":"string","actionTitle":"verb-first 8 words max","category":"People|Process|Technology|Culture|External","classification":"Quick Win|Strategic|Low Priority|Reconsider","problemStatement":"1 sentence","recommendation":"1 sentence","responsibleRole":"job title","steps":["phrase","phrase","phrase"],"timeline":"Week 1–2 or Month N","expectedBenefit":"1 sentence","kpi":"one metric"}],"changeManagement":{"keyStakeholders":["role"],"resistanceItems":[{"stakeholder":"string","concern":"short phrase","response":"short phrase"}],"communicationPlan":["phrase","phrase","phrase"]}}
+Rules: one action per gap, Quick Wins first. steps: max 3 items. keyStakeholders: 3–4 roles. resistanceItems: 2–3. communicationPlan: exactly 3. Use context from input.`
 
 // ── Gantt chart SVG ───────────────────────────────────────────────────────────
 
@@ -245,7 +204,7 @@ export async function POST(request: Request) {
   try {
     const message = await client.messages.create({
       model: 'claude-sonnet-4-6',
-      max_tokens: 4000,
+      max_tokens: 800,
       system: SYSTEM_PROMPT,
       messages: [{ role: 'user', content: userMessage }],
     })

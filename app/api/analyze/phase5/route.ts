@@ -42,19 +42,6 @@ function formatPayload(body: Record<string, unknown>): string {
   return lines.join('\n')
 }
 
-function extractJSON(text: string): unknown {
-  const trimmed = text.trim()
-  try {
-    return JSON.parse(trimmed)
-  } catch {
-    const fence = trimmed.match(/```(?:json)?\s*([\s\S]*?)```/)
-    if (fence) return JSON.parse(fence[1].trim())
-    const brace = trimmed.match(/\{[\s\S]*\}/)
-    if (brace) return JSON.parse(brace[0])
-    throw new Error('Could not parse JSON from model response')
-  }
-}
-
 export async function POST(request: Request) {
   let body: Record<string, unknown>
   try {
@@ -64,38 +51,42 @@ export async function POST(request: Request) {
   }
 
   const userMessage = formatPayload(body)
+  const encoder = new TextEncoder()
 
-  let raw = ''
-  try {
-    const message = await client.messages.create({
-      model: 'claude-sonnet-4-6',
-      max_tokens: 600,
-      system: SYSTEM_PROMPT,
-      messages: [{ role: 'user', content: userMessage }],
-    })
+  const readable = new ReadableStream({
+    async start(controller) {
+      try {
+        const stream = await client.messages.stream({
+          model: 'claude-sonnet-4-6',
+          max_tokens: 600,
+          system: SYSTEM_PROMPT,
+          messages: [{ role: 'user', content: userMessage }],
+        })
 
-    raw = message.content
-      .filter(b => b.type === 'text')
-      .map(b => (b as { type: 'text'; text: string }).text)
-      .join('')
-  } catch (err) {
-    console.error('[phase5] Anthropic API error:', err)
-    const message = err instanceof Error ? err.message : 'API call failed.'
-    return Response.json({ error: message }, { status: 500 })
-  }
+        for await (const event of stream) {
+          if (
+            event.type === 'content_block_delta' &&
+            event.delta.type === 'text_delta'
+          ) {
+            controller.enqueue(encoder.encode(event.delta.text))
+          }
+        }
+      } catch (err) {
+        console.error('[phase5] Anthropic API error:', err)
+        const message = err instanceof Error ? err.message : 'API call failed.'
+        controller.enqueue(encoder.encode('\x00' + JSON.stringify({ error: message })))
+      } finally {
+        controller.close()
+      }
+    },
+  })
 
-  try {
-    const parsed = extractJSON(raw) as { gaps: unknown[] }
-
-    if (!parsed?.gaps || !Array.isArray(parsed.gaps)) {
-      return Response.json({ error: 'Unexpected response format from model.' }, { status: 500 })
-    }
-
-    return Response.json(parsed)
-  } catch (err) {
-    console.error('[phase5] JSON parse error:', err)
-    console.error('[phase5] Raw response (first 500 chars):', raw.slice(0, 500))
-    const message = err instanceof Error ? err.message : 'Failed to parse model response.'
-    return Response.json({ error: message }, { status: 500 })
-  }
+  return new Response(readable, {
+    status: 200,
+    headers: {
+      'Content-Type': 'text/plain; charset=utf-8',
+      'Cache-Control': 'no-cache',
+      'X-Accel-Buffering': 'no',
+    },
+  })
 }

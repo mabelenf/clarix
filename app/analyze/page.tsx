@@ -621,12 +621,29 @@ export default function AnalyzePage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       })
-      if (!res.ok) {
+      if (!res.ok || !res.body) {
         setPhase5Status('error')
         setError('Something went wrong. Please try again.')
         return
       }
-      const data = await res.json() as { gaps: Gap[] }
+      const reader = res.body.getReader()
+      const decoder = new TextDecoder()
+      let text = ''
+      while (true) {
+        const { done, value } = await reader.read()
+        if (done) break
+        text += decoder.decode(value, { stream: true })
+      }
+      // Check for error sentinel from server
+      if (text.includes('\x00')) {
+        const sentinel = JSON.parse(text.split('\x00')[1]) as { error?: string }
+        if (sentinel.error) {
+          setPhase5Status('error')
+          setError(sentinel.error)
+          return
+        }
+      }
+      const data = JSON.parse(text) as { gaps: Gap[] }
       setPhase5Gaps(data.gaps ?? [])
       setPhase5Status('done')
     } catch {
@@ -666,13 +683,28 @@ export default function AnalyzePage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       })
-      if (!res.ok) {
+      if (!res.ok || !res.body) {
         setPhase6Status('error')
         setError('Something went wrong. Please try again.')
         return
       }
-      const data = await res.json() as ActionPlan
-      setPhase6Plan(data)
+      const reader = res.body.getReader()
+      const decoder = new TextDecoder()
+      let text = ''
+      while (true) {
+        const { done, value } = await reader.read()
+        if (done) break
+        text += decoder.decode(value, { stream: true })
+      }
+      const parts = text.split('\x00')
+      const sentinel = JSON.parse(parts[1] ?? '{}') as { ganttSvg?: string; error?: string }
+      if (sentinel.error) {
+        setPhase6Status('error')
+        setError(sentinel.error)
+        return
+      }
+      const data = JSON.parse(parts[0]) as ActionPlan
+      setPhase6Plan({ ...data, ganttSvg: sentinel.ganttSvg ?? '' })
       setPhase6Status('done')
     } catch {
       setPhase6Status('error')

@@ -199,46 +199,58 @@ export async function POST(request: Request) {
   }
 
   const userMessage = formatPayload(body)
+  const encoder = new TextEncoder()
 
-  let raw = ''
-  try {
-    const message = await client.messages.create({
-      model: 'claude-sonnet-4-6',
-      max_tokens: 800,
-      system: SYSTEM_PROMPT,
-      messages: [{ role: 'user', content: userMessage }],
-    })
+  const readable = new ReadableStream({
+    async start(controller) {
+      let raw = ''
+      try {
+        const stream = await client.messages.stream({
+          model: 'claude-sonnet-4-6',
+          max_tokens: 800,
+          system: SYSTEM_PROMPT,
+          messages: [{ role: 'user', content: userMessage }],
+        })
 
-    raw = message.content
-      .filter(b => b.type === 'text')
-      .map(b => (b as { type: 'text'; text: string }).text)
-      .join('')
-  } catch (err) {
-    console.error('[phase6] Anthropic API error:', err)
-    const message = err instanceof Error ? err.message : 'API call failed.'
-    return Response.json({ error: message }, { status: 500 })
-  }
+        for await (const event of stream) {
+          if (
+            event.type === 'content_block_delta' &&
+            event.delta.type === 'text_delta'
+          ) {
+            controller.enqueue(encoder.encode(event.delta.text))
+            raw += event.delta.text
+          }
+        }
+      } catch (err) {
+        console.error('[phase6] Anthropic API error:', err)
+        const message = err instanceof Error ? err.message : 'API call failed.'
+        controller.enqueue(encoder.encode('\x00' + JSON.stringify({ error: message })))
+        controller.close()
+        return
+      }
 
-  let parsed: { actions: unknown[]; changeManagement: unknown }
-  try {
-    parsed = extractJSON(raw) as { actions: unknown[]; changeManagement: unknown }
-    if (!parsed?.actions || !Array.isArray(parsed.actions)) {
-      throw new Error('Response missing actions array')
-    }
-  } catch (err) {
-    console.error('[phase6] JSON parse error:', err)
-    console.error('[phase6] Raw response (first 500 chars):', raw.slice(0, 500))
-    const message = err instanceof Error ? err.message : 'Failed to parse model response.'
-    return Response.json({ error: message }, { status: 500 })
-  }
+      // After stream complete: generate ganttSvg and send as sentinel chunk
+      let ganttSvg = ''
+      try {
+        const parsed = extractJSON(raw) as { actions: unknown[] }
+        if (parsed?.actions && Array.isArray(parsed.actions)) {
+          ganttSvg = buildGanttSvg(parsed.actions as GanttRow[])
+        }
+      } catch (err) {
+        console.error('[phase6] Post-stream processing error:', err)
+      }
 
-  // Gantt is best-effort — never let it crash the action plan response
-  let ganttSvg = ''
-  try {
-    ganttSvg = buildGanttSvg(parsed.actions as GanttRow[])
-  } catch (err) {
-    console.error('[phase6] Gantt generation error:', err)
-  }
+      controller.enqueue(encoder.encode('\x00' + JSON.stringify({ ganttSvg })))
+      controller.close()
+    },
+  })
 
-  return Response.json({ ...parsed, ganttSvg })
+  return new Response(readable, {
+    status: 200,
+    headers: {
+      'Content-Type': 'text/plain; charset=utf-8',
+      'Cache-Control': 'no-cache',
+      'X-Accel-Buffering': 'no',
+    },
+  })
 }

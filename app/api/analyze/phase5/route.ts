@@ -2,50 +2,21 @@ import Anthropic from '@anthropic-ai/sdk'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
+export const maxDuration = 60
 
 const client = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
 })
 
-const SYSTEM_PROMPT = `You are Clarix, a business process analyst. Analyze the data provided and identify the most important gaps between the current state (AS-IS) and the desired future state (TO-BE).
+const SYSTEM_PROMPT = `You are Clarix, a business process analyst. Identify the most important gaps between AS-IS and TO-BE.
 
-Return ONLY a valid JSON object — no preamble, no explanation, no markdown code fences. The output must be parseable by JSON.parse().
+Return ONLY valid JSON parseable by JSON.parse(). No preamble, no markdown fences.
 
-Schema:
-{
-  "gaps": [
-    {
-      "id": "gap-1",
-      "name": "string (max 6 words — describes the problem, e.g. 'No standard approval workflow')",
-      "actionTitle": "string (max 8 words — starts with a verb, e.g. 'Implement standard approval workflow')",
-      "category": "People" | "Process" | "Technology" | "Culture" | "External",
-      "impact": "High" | "Medium" | "Low",
-      "effort": "High" | "Medium" | "Low",
-      "cost": "High" | "Medium" | "Low",
-      "classification": "Quick Win" | "Strategic" | "Low Priority" | "Reconsider",
-      "explanation": "string (max 20 words — what this gap means in plain language)",
-      "impactReason": "string (max 20 words — why impact is rated High/Medium/Low)",
-      "effortReason": "string (max 20 words — why effort is rated High/Medium/Low)",
-      "costReason": "string (max 20 words — why cost is rated High/Medium/Low)"
-    }
-  ]
-}
+Schema: {"gaps":[{"id":"gap-1","name":"string (max 6 words, e.g. 'No standard approval workflow')","actionTitle":"string (max 8 words, verb-first, e.g. 'Implement standard approval workflow')","category":"People"|"Process"|"Technology"|"Culture"|"External","impact":"High"|"Medium"|"Low","effort":"High"|"Medium"|"Low","cost":"High"|"Medium"|"Low","classification":"Quick Win"|"Strategic"|"Low Priority"|"Reconsider","explanation":"string (max 15 words)","impactReason":"string (max 15 words)","effortReason":"string (max 15 words)","costReason":"string (max 15 words)"}]}
 
-Classification rules (apply strictly):
-- Quick Win: High or Medium impact AND Low effort
-- Strategic: High impact AND Medium or High effort
-- Low Priority: Low impact, any effort
-- Reconsider: Low or Medium impact AND High effort
+Classification: Quick Win=High/Medium impact+Low effort. Strategic=High impact+Medium/High effort. Low Priority=Low impact. Reconsider=Low/Medium impact+High effort.
 
-Guidelines:
-- Return 5–8 gaps. Never more than 8.
-- Focus on the gaps most relevant to the user's stated goals.
-- Gap names must be specific and descriptive — not "process issue" but "No standard approval workflow".
-- Consider constraints and off-limits items: do not create gaps for things the user marked as off-limits.
-- Distribute across categories where the data supports it — avoid listing all gaps under one category.
-- Impact = how much fixing this gap contributes to the user's goals.
-- Effort = how hard it is to close the gap (time, complexity, change management).
-- Cost = financial cost to close the gap.`
+Rules: Return 5–8 gaps. Use specific names. Skip off-limits items. Spread across categories. Impact=contribution to goals. Effort=time+complexity. Cost=financial cost.`
 
 function formatPayload(body: Record<string, unknown>): string {
   const lines: string[] = []
@@ -100,19 +71,26 @@ export async function POST(request: Request) {
 
   const userMessage = formatPayload(body)
 
+  let raw = ''
   try {
     const message = await client.messages.create({
       model: 'claude-sonnet-4-6',
-      max_tokens: 1200,
+      max_tokens: 1000,
       system: SYSTEM_PROMPT,
       messages: [{ role: 'user', content: userMessage }],
     })
 
-    const raw = message.content
+    raw = message.content
       .filter(b => b.type === 'text')
       .map(b => (b as { type: 'text'; text: string }).text)
       .join('')
+  } catch (err) {
+    console.error('[phase5] Anthropic API error:', err)
+    const message = err instanceof Error ? err.message : 'API call failed.'
+    return Response.json({ error: message }, { status: 500 })
+  }
 
+  try {
     const parsed = extractJSON(raw) as { gaps: unknown[] }
 
     if (!parsed?.gaps || !Array.isArray(parsed.gaps)) {
@@ -121,7 +99,9 @@ export async function POST(request: Request) {
 
     return Response.json(parsed)
   } catch (err) {
-    const message = err instanceof Error ? err.message : 'An error occurred.'
+    console.error('[phase5] JSON parse error:', err)
+    console.error('[phase5] Raw response (first 500 chars):', raw.slice(0, 500))
+    const message = err instanceof Error ? err.message : 'Failed to parse model response.'
     return Response.json({ error: message }, { status: 500 })
   }
 }

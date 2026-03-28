@@ -602,30 +602,28 @@ export default function AnalyzePage() {
     setPhase5Gaps([])
     setPhase5Status('loading')
     setError(null)
-    try {
-      const payload = {
-        phase1: p1,
-        phase2: {
-          ...p2,
-          supportingDocuments: p2.supportingDocuments.map(f => ({
-            name: f.name,
-            size: f.size,
-            type: f.type,
-          })),
-        },
-        phase3: p3,
-        phase4: p4,
-      }
-      const res = await fetch('/api/analyze/phase5', {
+
+    const payload = {
+      phase1: p1,
+      phase2: {
+        ...p2,
+        supportingDocuments: p2.supportingDocuments.map(f => ({
+          name: f.name,
+          size: f.size,
+          type: f.type,
+        })),
+      },
+      phase3: p3,
+      phase4: p4,
+    }
+
+    async function fetchGaps(url: string): Promise<Gap[]> {
+      const res = await fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       })
-      if (!res.ok || !res.body) {
-        setPhase5Status('error')
-        setError('Something went wrong. Please try again.')
-        return
-      }
+      if (!res.ok || !res.body) throw new Error('Request failed')
       const reader = res.body.getReader()
       const decoder = new TextDecoder()
       let text = ''
@@ -634,17 +632,20 @@ export default function AnalyzePage() {
         if (done) break
         text += decoder.decode(value, { stream: true })
       }
-      // Check for error sentinel from server
       if (text.includes('\x00')) {
         const sentinel = JSON.parse(text.split('\x00')[1]) as { error?: string }
-        if (sentinel.error) {
-          setPhase5Status('error')
-          setError(sentinel.error)
-          return
-        }
+        if (sentinel.error) throw new Error(sentinel.error)
       }
       const data = JSON.parse(text) as { gaps: Gap[] }
-      setPhase5Gaps(data.gaps ?? [])
+      return data.gaps ?? []
+    }
+
+    try {
+      const [quickGaps, strategicGaps] = await Promise.all([
+        fetchGaps('/api/analyze/phase5/quick'),
+        fetchGaps('/api/analyze/phase5/strategic'),
+      ])
+      setPhase5Gaps([...quickGaps, ...strategicGaps])
       setPhase5Status('done')
     } catch {
       setPhase5Status('error')

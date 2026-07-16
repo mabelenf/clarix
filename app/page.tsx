@@ -6,17 +6,6 @@ export default function Home() {
       {/* Nav */}
       <nav className="flex items-center justify-between px-8 py-5 border-b border-white/10">
         <span className="text-xl font-bold tracking-tight text-white">Clarix</span>
-        <div className="flex items-center gap-6">
-          <a href="#" className="text-sm text-slate-400 hover:text-white transition-colors">Features</a>
-          <a href="#" className="text-sm text-slate-400 hover:text-white transition-colors">Pricing</a>
-          <a href="#" className="text-sm text-slate-400 hover:text-white transition-colors">About</a>
-          <a
-            href="#"
-            className="text-sm bg-white text-[#0f172a] font-semibold px-4 py-2 rounded-lg hover:bg-slate-100 transition-colors"
-          >
-            Sign In
-          </a>
-        </div>
       </nav>
 
       {/* Hero */}
@@ -45,18 +34,6 @@ export default function Home() {
           <a href="#" className="text-sm text-slate-400 hover:text-white transition-colors">
             See how it works →
           </a>
-        </div>
-
-        {/* Social proof */}
-        <p className="mt-14 text-xs text-slate-600 uppercase tracking-widest">
-          Trusted by operations teams at
-        </p>
-        <div className="mt-4 flex items-center gap-10 opacity-40">
-          {["Acme Corp", "Meridian", "Strata", "Velo", "Nexus"].map((name) => (
-            <span key={name} className="text-sm font-semibold text-slate-300 tracking-wide">
-              {name}
-            </span>
-          ))}
         </div>
       </main>
 

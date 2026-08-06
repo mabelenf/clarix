@@ -714,11 +714,13 @@ function stripMarkdownFence(raw: string): string {
       const data = JSON.parse(stripMarkdownFence(parts[0])) as ActionPlan
       setPhase6Plan({ ...data, ganttSvg: sentinel.ganttSvg ?? '' })
       setPhase6Status('done')
-    } catch {
-      setPhase6Status('error')
-      setError('Something went wrong. Please try again.')
-    }
-  }, [])
+
+     } catch (err) {
+         console.error('[phase6] failed:', err)
+         setPhase6Status('error')
+         setError('Something went wrong. Please try again.')
+       }
+     }, [])
 
   // ── Goal drag ──
 

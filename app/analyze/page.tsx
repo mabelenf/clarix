@@ -701,13 +701,13 @@ function stripMarkdownFence(raw: string): string {
         text += decoder.decode(value, { stream: true })
       }
       const parts = text.split('\x00')
-      const sentinel = JSON.parse(parts[1] ?? '{}') as { ganttSvg?: string; error?: string }
+      const sentinel = JSON.parse(stripMarkdownFence(parts[1] ?? '{}')) as { ganttSvg?: string; error?: string }
       if (sentinel.error) {
         setPhase6Status('error')
         setError(sentinel.error)
         return
       }
-      const data = JSON.parse(parts[0]) as ActionPlan
+      const data = JSON.parse(stripMarkdownFence(parts[0])) as ActionPlan
       setPhase6Plan({ ...data, ganttSvg: sentinel.ganttSvg ?? '' })
       setPhase6Status('done')
     } catch {

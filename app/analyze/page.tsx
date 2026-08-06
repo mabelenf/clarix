@@ -647,11 +647,12 @@ export default function AnalyzePage() {
       ])
       setPhase5Gaps([...quickGaps, ...strategicGaps])
       setPhase5Status('done')
-    } catch {
-      setPhase5Status('error')
-      setError('Something went wrong. Please try again.')
-    }
-  }, [])
+  } catch (err) {
+         console.error('[phase5] gap analysis failed:', err)
+         setPhase5Status('error')
+         setError('Something went wrong. Please try again.')
+       }
+     }, [])
 
   const handlePhase6Fetch = useCallback(async (
     p1: FormData,

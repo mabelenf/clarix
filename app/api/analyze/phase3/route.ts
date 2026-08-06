@@ -2,7 +2,7 @@ import Anthropic from '@anthropic-ai/sdk'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
-export const maxDuration = 30
+export const maxDuration = 60
 
 const client = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,

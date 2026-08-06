@@ -616,7 +616,9 @@ export default function AnalyzePage() {
       phase3: p3,
       phase4: p4,
     }
-
+function stripMarkdownFence(raw: string): string {
+      return raw.trim().replace(/^```(?:json)?\s*/i, '').replace(/```\s*$/, '').trim()
+    }
     async function fetchGaps(url: string): Promise<Gap[]> {
       const res = await fetch(url, {
         method: 'POST',
@@ -633,10 +635,10 @@ export default function AnalyzePage() {
         text += decoder.decode(value, { stream: true })
       }
       if (text.includes('\x00')) {
-        const sentinel = JSON.parse(text.split('\x00')[1]) as { error?: string }
+        const sentinel = JSON.parse(stripMarkdownFence(text.split('\x00')[1])) as { error?: string }
         if (sentinel.error) throw new Error(sentinel.error)
       }
-      const data = JSON.parse(text) as { gaps: Gap[] }
+      const data = JSON.parse(stripMarkdownFence(text)) as { gaps: Gap[] }
       return data.gaps ?? []
     }
 

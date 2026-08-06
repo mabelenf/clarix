@@ -3,6 +3,10 @@
 import { useState, useRef, useCallback } from 'react'
 import Link from 'next/link'
 
+function stripMarkdownFence(raw: string): string {
+     return raw.trim().replace(/^```(?:json)?\s*/i, '').replace(/```\s*$/, '').trim()
+   }
+
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 type FormData = {

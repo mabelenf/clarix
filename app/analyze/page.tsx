@@ -691,11 +691,13 @@ function stripMarkdownFence(raw: string): string {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       })
-      if (!res.ok || !res.body) {
-        setPhase6Status('error')
-        setError('Something went wrong. Please try again.')
-        return
-      }
+   
+         if (!res.ok || !res.body) {
+         console.error('[phase6] bad response, status:', res.status, res.statusText)
+         setPhase6Status('error')
+         setError('Something went wrong. Please try again.')
+         return
+       }
       const reader = res.body.getReader()
       const decoder = new TextDecoder()
       let text = ''

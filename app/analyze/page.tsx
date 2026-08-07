@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef, useCallback } from 'react'
+import { useState, useRef, useCallback, useEffect } from 'react'
 import Link from 'next/link'
 
 function stripMarkdownFence(raw: string): string {
@@ -336,6 +336,20 @@ export default function AnalyzePage() {
   const [error, setError] = useState<string | null>(null)
   const draggedIdx = useRef<number | null>(null)
   const dragOverIdx = useRef<number | null>(null)
+
+  // Full report (all phases combined into one PDF)
+  const [showFullReport, setShowFullReport] = useState(false)
+
+  useEffect(() => {
+    if (!showFullReport) return
+    const timer = setTimeout(() => window.print(), 150)
+    const handleAfterPrint = () => setShowFullReport(false)
+    window.addEventListener('afterprint', handleAfterPrint)
+    return () => {
+      clearTimeout(timer)
+      window.removeEventListener('afterprint', handleAfterPrint)
+    }
+  }, [showFullReport])
 
   // ── Phase 1 ──
 
@@ -871,6 +885,22 @@ function stripMarkdownFence(raw: string): string {
     )
   }
 
+  if (showFullReport) {
+    return (
+      <FullReportView
+        formData={formData}
+        phase1Response={phase1Response}
+        phase2Response={phase2Response}
+        phase2Diagrams={phase2Diagrams}
+        phase3Response={phase3Response}
+        phase4Response={phase4Response}
+        phase4Diagrams={phase4Diagrams}
+        phase5Gaps={phase5Gaps}
+        phase6Plan={phase6Plan}
+      />
+    )
+  }
+
   if (view === 'phase5') {
     return (
       <Phase5Screen
@@ -889,6 +919,7 @@ function stripMarkdownFence(raw: string): string {
         status={phase6Status}
         plan={phase6Plan}
         error={error}
+        onDownloadFullReport={() => setShowFullReport(true)}
       />
     )
   }
@@ -3155,14 +3186,190 @@ function ChangeManagementSection({ cm }: { cm: ChangeManagement }) {
   )
 }
 
+function FullReportView({
+  formData,
+  phase1Response,
+  phase2Response,
+  phase2Diagrams,
+  phase3Response,
+  phase4Response,
+  phase4Diagrams,
+  phase5Gaps,
+  phase6Plan,
+}: {
+  formData: FormData
+  phase1Response: string
+  phase2Response: string
+  phase2Diagrams: { flowchartSvg: string; ishikawaSvg: string } | null
+  phase3Response: string
+  phase4Response: string
+  phase4Diagrams: { toBeFlowchartSvg: string } | null
+  phase5Gaps: Gap[]
+  phase6Plan: ActionPlan | null
+}) {
+  const quickWins = phase6Plan?.actions.filter(a => a.classification === 'Quick Win') ?? []
+  const strategic = phase6Plan?.actions.filter(a => a.classification === 'Strategic') ?? []
+  const others = phase6Plan?.actions.filter(a => a.classification !== 'Quick Win' && a.classification !== 'Strategic') ?? []
+
+  return (
+    <div className="min-h-screen bg-white text-slate-900 px-10 py-10 max-w-4xl mx-auto">
+      <header className="mb-10 pb-6 border-b border-slate-200">
+        <h1 className="text-3xl font-bold">Clarix — Full Process Improvement Report</h1>
+        {formData.processArea && <p className="text-slate-500 mt-1">{formData.processArea}</p>}
+      </header>
+
+      <section className="mb-12">
+        <h2 className="text-xl font-bold text-indigo-700 uppercase tracking-widest mb-4">1. Context &amp; Positioning</h2>
+        <MarkdownRenderer text={phase1Response} />
+      </section>
+
+      <section className="mb-12">
+        <h2 className="text-xl font-bold text-indigo-700 uppercase tracking-widest mb-4">2. AS-IS Analysis</h2>
+        <MarkdownRenderer text={phase2Response} />
+        {phase2Diagrams?.flowchartSvg && (
+          <div className="mt-6">
+            <p className="text-xs font-semibold text-slate-500 uppercase tracking-widest mb-3">AS-IS Process Flowchart</p>
+            <div className="border border-slate-200 rounded-lg overflow-hidden" dangerouslySetInnerHTML={{ __html: phase2Diagrams.flowchartSvg }} />
+          </div>
+        )}
+        {phase2Diagrams?.ishikawaSvg && (
+          <div className="mt-6">
+            <p className="text-xs font-semibold text-slate-500 uppercase tracking-widest mb-3">Root Cause (Ishikawa) Diagram</p>
+            <div className="border border-slate-200 rounded-lg overflow-hidden" dangerouslySetInnerHTML={{ __html: phase2Diagrams.ishikawaSvg }} />
+          </div>
+        )}
+      </section>
+
+      <section className="mb-12">
+        <h2 className="text-xl font-bold text-indigo-700 uppercase tracking-widest mb-4">3. Desired Outcome</h2>
+        <MarkdownRenderer text={phase3Response} />
+      </section>
+
+      <section className="mb-12">
+        <h2 className="text-xl font-bold text-indigo-700 uppercase tracking-widest mb-4">4. TO-BE Plan</h2>
+        <MarkdownRenderer text={phase4Response} />
+        {phase4Diagrams?.toBeFlowchartSvg && (
+          <div className="mt-6">
+            <p className="text-xs font-semibold text-slate-500 uppercase tracking-widest mb-3">TO-BE Process Flowchart</p>
+            <div className="border border-slate-200 rounded-lg overflow-hidden" dangerouslySetInnerHTML={{ __html: phase4Diagrams.toBeFlowchartSvg }} />
+          </div>
+        )}
+      </section>
+
+      <section className="mb-12">
+        <h2 className="text-xl font-bold text-indigo-700 uppercase tracking-widest mb-4">5. Gap Analysis</h2>
+        <div className="space-y-3">
+          {phase5Gaps.map(gap => (
+            <div key={gap.id} className="border border-slate-200 rounded-lg p-4">
+              <div className="flex items-center justify-between mb-1">
+                <p className="font-semibold">{gap.name}</p>
+                <span className="text-xs uppercase tracking-wide text-slate-500">{gap.classification}</span>
+              </div>
+              <p className="text-sm text-slate-600 mb-2">{gap.explanation}</p>
+              <p className="text-xs text-slate-500">
+                Category: {gap.category} · Impact: {gap.impact} · Effort: {gap.effort} · Cost: {gap.cost}
+              </p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="mb-12">
+        <h2 className="text-xl font-bold text-indigo-700 uppercase tracking-widest mb-4">6. Action Plan</h2>
+        {phase6Plan?.ganttSvg && (
+          <div className="mb-8">
+            <p className="text-xs font-semibold text-slate-500 uppercase tracking-widest mb-3">Implementation Timeline</p>
+            <div className="border border-slate-200 rounded-lg overflow-hidden" dangerouslySetInnerHTML={{ __html: phase6Plan.ganttSvg }} />
+          </div>
+        )}
+        {quickWins.length > 0 && (
+          <div className="mb-8">
+            <h3 className="text-sm font-semibold text-emerald-700 uppercase tracking-widest mb-3">Quick Wins</h3>
+            <div className="space-y-4">
+              {quickWins.map(card => <PrintActionCard key={card.gapId} card={card} />)}
+            </div>
+          </div>
+        )}
+        {strategic.length > 0 && (
+          <div className="mb-8">
+            <h3 className="text-sm font-semibold text-blue-700 uppercase tracking-widest mb-3">Strategic Initiatives</h3>
+            <div className="space-y-4">
+              {strategic.map(card => <PrintActionCard key={card.gapId} card={card} />)}
+            </div>
+          </div>
+        )}
+        {others.length > 0 && (
+          <div className="mb-8">
+            <h3 className="text-sm font-semibold text-slate-700 uppercase tracking-widest mb-3">Other Actions</h3>
+            <div className="space-y-4">
+              {others.map(card => <PrintActionCard key={card.gapId} card={card} />)}
+            </div>
+          </div>
+        )}
+        {phase6Plan?.changeManagement && (
+          <PrintChangeManagement cm={phase6Plan.changeManagement} />
+        )}
+      </section>
+    </div>
+  )
+}
+
+function PrintActionCard({ card }: { card: ActionCard }) {
+  return (
+    <div className="border border-slate-200 rounded-lg p-4">
+      <div className="flex items-center justify-between mb-1">
+        <p className="text-xs uppercase tracking-wide text-slate-500">{card.classification} · {card.category}</p>
+        <span className="text-xs text-slate-500">{card.timeline}</span>
+      </div>
+      <p className="font-semibold mb-1">{card.actionTitle}</p>
+      <p className="text-sm text-slate-700 mb-2"><span className="font-medium">Problem:</span> {card.problemStatement}</p>
+      <p className="text-sm text-slate-700 mb-2"><span className="font-medium">Recommendation:</span> {card.recommendation}</p>
+      <ol className="list-decimal list-inside text-sm text-slate-700 mb-2 space-y-0.5">
+        {card.steps.map((step, i) => <li key={i}>{step}</li>)}
+      </ol>
+      <div className="flex justify-between text-xs text-slate-500">
+        <span>Responsible: {card.responsibleRole}</span>
+        <span>KPI: {card.kpi}</span>
+      </div>
+      <p className="text-sm text-slate-700 mt-2"><span className="font-medium">Expected Benefit:</span> {card.expectedBenefit}</p>
+    </div>
+  )
+}
+
+function PrintChangeManagement({ cm }: { cm: ChangeManagement }) {
+  return (
+    <div className="mt-4">
+      <h3 className="text-sm font-semibold text-slate-700 uppercase tracking-widest mb-3">Change Management</h3>
+      <p className="text-xs font-semibold text-slate-500 uppercase tracking-widest mb-1">Key Stakeholders</p>
+      <p className="text-sm text-slate-700 mb-4">{cm.keyStakeholders.join(', ')}</p>
+      <p className="text-xs font-semibold text-slate-500 uppercase tracking-widest mb-1">Resistance &amp; Response</p>
+      <div className="space-y-2 mb-4">
+        {cm.resistanceItems.map((item, i) => (
+          <div key={i} className="text-sm text-slate-700">
+            <p className="font-medium">{item.stakeholder}</p>
+            <p>Concern: {item.concern}</p>
+            <p>Response: {item.response}</p>
+          </div>
+        ))}
+      </div>
+      <p className="text-xs font-semibold text-slate-500 uppercase tracking-widest mb-1">Communication Plan</p>
+      <ul className="list-disc list-inside text-sm text-slate-700 space-y-0.5">
+        {cm.communicationPlan.map((item, i) => <li key={i}>{item}</li>)}
+      </ul>
+    </div>
+  )
+}
+
 function Phase6Screen({
   status,
   plan,
   error,
+  onDownloadFullReport,
 }: {
   status: 'loading' | 'done' | 'error'
   plan: ActionPlan | null
   error: string | null
+  onDownloadFullReport: () => void
 }) {
   const quickWins = plan?.actions.filter(a => a.classification === 'Quick Win') ?? []
   const strategic = plan?.actions.filter(a => a.classification === 'Strategic') ?? []
@@ -3237,12 +3444,18 @@ function Phase6Screen({
               <ChangeManagementSection cm={plan.changeManagement} />
             )}
 
-            <div className="pt-4 flex justify-center">
+            <div className="pt-4 flex flex-col sm:flex-row gap-3 justify-center">
               <button
                 onClick={() => window.print()}
                 className="generate-report-btn px-8 py-4 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-xl transition-colors text-base"
               >
                 Generate Final Report
+              </button>
+              <button
+                onClick={onDownloadFullReport}
+                className="generate-report-btn px-8 py-4 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-semibold rounded-xl transition-colors text-base"
+              >
+                Download Full Report (PDF)
               </button>
             </div>
           </div>

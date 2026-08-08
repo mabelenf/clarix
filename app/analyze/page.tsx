@@ -660,12 +660,9 @@ function stripMarkdownFence(raw: string): string {
       return data.gaps ?? []
     }
 
-    try {
-      const [quickGaps, strategicGaps] = await Promise.all([
-        fetchGaps('/api/analyze/phase5/quick'),
-        fetchGaps('/api/analyze/phase5/strategic'),
-      ])
-      setPhase5Gaps([...quickGaps, ...strategicGaps])
+ try {
+      const gaps = await fetchGaps('/api/analyze/phase5')
+      setPhase5Gaps(gaps)
       setPhase5Status('done')
   } catch (err) {
          console.error('[phase5] gap analysis failed:', err)

@@ -2,7 +2,7 @@ import Anthropic from '@anthropic-ai/sdk'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
-export const maxDuration = 30
+export const maxDuration = 60
 
 const client = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
@@ -58,7 +58,7 @@ export async function POST(request: Request) {
       try {
         const stream = await client.messages.stream({
           model: 'claude-sonnet-4-6',
-          max_tokens: 600,
+          max_tokens: 1200,
           system: SYSTEM_PROMPT,
           messages: [{ role: 'user', content: userMessage }],
         })

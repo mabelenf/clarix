@@ -288,7 +288,7 @@ const CONSTRAINT_OPTIONS = [
 ]
 
 const PHASE1_TOTAL_STEPS = 7
-const PHASE2_TOTAL_STEPS = 12
+const PHASE2_TOTAL_STEPS = 11
 const PHASE3_TOTAL_STEPS = 2
 const PHASE4_TOTAL_STEPS = 3
 
@@ -419,7 +419,6 @@ export default function AnalyzePage() {
       case 9: return phase2Data.hasTechChanges !== ''
       case 10: return phase2Data.hasCulturalChanges !== ''
       case 11: return phase2Data.hasExternalChanges !== ''
-      case 12: return true
       default: return false
     }
   }
@@ -1214,13 +1213,7 @@ function Phase2Wizard({
               onDetail={val => onChange({ ...data, externalChangesDetail: val })}
             />
           )}
-          {step === 12 && (
-            <StepFileUpload
-              files={data.supportingDocuments}
-              onChange={files => onChange({ ...data, supportingDocuments: files })}
-            />
-          )}
-
+          
           <div className="mt-10 flex items-center justify-between">
             <button
               onClick={onBack}
@@ -2127,8 +2120,8 @@ function Phase3Wizard({
           )}
           {step === 2 && (
             <StepTextArea
-              question="Are there specific numbers or targets you are trying to hit?"
-              placeholder="e.g. Reduce onboarding time from 14 to 7 days, cut errors by 50%, process 200 requests per week…"
+              question="What are your current numbers, and what targets are you trying to hit? Please include both so we can compare before vs. after."
+              placeholder="e.g. Onboarding currently takes 14 days, target is 7. Error rate is currently ~12%, target is under 5%. If you don't track a number yet, just say so."
               value={data.targets}
               onChange={val => onChange({ ...data, targets: val })}
               rows={6}

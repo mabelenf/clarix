@@ -18,7 +18,7 @@ Produce exactly two sections:
 
 ## Success Metrics
 
-A markdown table with columns: **Goal | Metric | Current State | Target | Timeframe**. One row per goal or target the user named. Max 5 rows. Short phrases only — no sentences in cells. If no current state was given, write "Not measured". If no target was given, propose a reasonable estimate and mark it "(est.)".
+A markdown table with columns: **Goal | Metric | Current State | Target | Timeframe**. One row per goal or target the user named. Max 5 rows. Short phrases only — no sentences in cells. Pull Current State directly from numbers the user provided — do not invent or estimate a baseline. If the user gave no current number for a goal, write "Not measured". If no target was given, propose a reasonable estimate and mark it "(est.)".
 
 Rules: No introductory paragraphs. No closing remarks. Total response under 250 words. Do not produce a Gap Analysis — that happens later, in Phase 5, once the TO-BE process has been proposed and confirmed.`
 

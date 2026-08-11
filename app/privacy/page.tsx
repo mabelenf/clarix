@@ -110,8 +110,13 @@ export default function Privacy() {
 
       {/* Footer */}
       <footer className="border-t border-white/10 py-6 px-8 flex items-center justify-between">
-        <span className="text-sm font-bold text-white">Clarix</span>
-        <p className="text-xs text-slate-600">© 2026 Clarix. All rights reserved.</p>
+<span className="text-sm font-bold text-white">Clarix</span>
+        <div className="flex items-center gap-4">
+          <a href="#" id="open_preferences_center" className="text-xs text-slate-500 hover:text-slate-300 transition-colors">
+            Cookie Preferences
+          </a>
+          <p className="text-xs text-slate-600">© 2026 Clarix. All rights reserved.</p>
+        </div>
       </footer>
     </div>
   );

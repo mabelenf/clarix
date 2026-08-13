@@ -44,8 +44,8 @@ export default function CookieBanner() {
       }}
     >
       <span style={{ maxWidth: "600px" }}>
-        Usamos cookies para mejorar tu experiencia en CLARIX. Al continuar,
-        aceptás nuestro uso de cookies.
+        We use cookies to improve your experience on CLARIX. By continuing,
+        you agree to our use of cookies.
       </span>
       <div style={{ display: "flex", gap: "8px" }}>
         <button
@@ -59,7 +59,7 @@ export default function CookieBanner() {
             cursor: "pointer",
           }}
         >
-          Rechazar
+          Decline
         </button>
         <button
           onClick={accept}
@@ -73,7 +73,7 @@ export default function CookieBanner() {
             fontWeight: 600,
           }}
         >
-          Aceptar
+          Accept
         </button>
       </div>
     </div>

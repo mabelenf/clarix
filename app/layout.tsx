@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Script from "next/script";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import CookieBanner from "./components/CookieBanner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,7 +31,7 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col">
         {children}
-
+  <CookieBanner />
         {/* Cookie Consent by TermsFeed https://www.TermsFeed.com */}
         <Script
           src="https://www.termsfeed.com/public/cookie-consent/4.2.0/cookie-consent.js"

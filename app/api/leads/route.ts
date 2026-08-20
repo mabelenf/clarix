@@ -18,7 +18,14 @@ export async function POST(req: Request) {
     const supabase = createClient(supabaseUrl, supabaseKey)
 
     const body = await req.json()
-    const { firstName, lastName, role, company, email, intent, subscribeUpdates } = body
+    const { firstName, lastName, role, company, email, intent, subscribeUpdates, website } = body
+
+    // Honeypot: real users never fill this field. If it's non-empty, this is
+    // almost certainly a bot. Pretend success so it doesn't try again — but
+    // never write anything to the database.
+    if (typeof website === 'string' && website.trim() !== '') {
+      return NextResponse.json({ ok: true }, { status: 200 })
+    }
 
     if (!firstName || !lastName || !role || !company || !email) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })

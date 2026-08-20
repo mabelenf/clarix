@@ -50,13 +50,14 @@ export default function Home() {
     email: '',
     consent: false,
     subscribeUpdates: false,
+    website: '', // honeypot — real users never see or fill this
   })
 
   function openModal(newIntent: Intent) {
     setIntent(newIntent)
     setStep('form')
     setError('')
-    setForm({ firstName: '', lastName: '', role: '', company: '', email: '', consent: false, subscribeUpdates: false })
+    setForm({ firstName: '', lastName: '', role: '', company: '', email: '', consent: false, subscribeUpdates: false, website: '' })
     setModalOpen(true)
   }
 
@@ -68,6 +69,16 @@ export default function Home() {
     e.preventDefault()
     setError('')
     setSubmitting(true)
+
+    // Honeypot: bots tend to fill every field, humans never see this one.
+    // Pretend it worked so the bot doesn't try again with a different approach.
+    if (form.website.trim() !== '') {
+      setSubmittedName(form.firstName)
+      setStep('success')
+      setSubmitting(false)
+      return
+    }
+
     try {
       const res = await fetch('/api/leads', {
         method: 'POST',
@@ -79,6 +90,7 @@ export default function Home() {
           company: form.company,
           email: form.email,
           subscribeUpdates: form.subscribeUpdates,
+          website: form.website,
           intent,
         }),
       })
@@ -450,6 +462,22 @@ export default function Home() {
                 </p>
 
                 <form onSubmit={handleSubmit}>
+                  {/* Honeypot field — hidden from real users, catches simple bots */}
+                  <div
+                    aria-hidden="true"
+                    style={{ position: 'absolute', left: '-9999px', width: '1px', height: '1px', overflow: 'hidden' }}
+                  >
+                    <label htmlFor="website">Website</label>
+                    <input
+                      type="text"
+                      id="website"
+                      name="website"
+                      tabIndex={-1}
+                      autoComplete="off"
+                      value={form.website}
+                      onChange={(e) => setForm({ ...form, website: e.target.value })}
+                    />
+                  </div>
                   <div className="mb-4 grid grid-cols-2 gap-3">
                     <div>
                       <label className="mb-1.5 block text-[13px] font-medium text-slate-300">

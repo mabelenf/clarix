@@ -216,7 +216,7 @@ export default function Home() {
               The problem
             </div>
             <h2 className="mb-4 text-3xl font-extrabold tracking-tight sm:text-4xl">
-              Inefficiency is costing your business.
+              Inefficiency Is Expensive
             </h2>
             <p className="text-[16.5px] text-slate-400">
               Clarix turns messy into a clear action plan.
@@ -238,8 +238,8 @@ export default function Home() {
                 desc: 'Tasks and deadlines that were planned rarely get met on time.',
               },
               {
-                title: 'Inefficiency Is Expensive',
-                desc: 'Companies lose up to 20\u201330% of annual revenue to inefficient processes, according to IDC research.',
+                title: 'The Cost Behind This',
+                desc: 'Companies lose up to 20\u201330% of annual revenue to inefficient processes',
               },
             ].map((item, i) => (
               <div

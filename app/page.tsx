@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, FormEvent } from 'react'
+import { useState, useEffect, useRef, FormEvent } from 'react'
 import Link from 'next/link'
 
 type Intent = 'diagnosis' | 'session'
@@ -21,6 +21,26 @@ export default function Home() {
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState('')
   const [submittedName, setSubmittedName] = useState('')
+
+  // Scroll-linked highlight for the "How it works" steps
+  const [activeStep, setActiveStep] = useState(0)
+  const stepRefs = useRef<(HTMLDivElement | null)[]>([])
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const idx = Number(entry.target.getAttribute('data-step-index'))
+            setActiveStep(idx)
+          }
+        })
+      },
+      { rootMargin: '-40% 0px -40% 0px', threshold: 0 }
+    )
+    stepRefs.current.forEach((el) => el && observer.observe(el))
+    return () => observer.disconnect()
+  }, [])
 
   const [form, setForm] = useState({
     firstName: '',
@@ -196,28 +216,25 @@ export default function Home() {
               The problem
             </div>
             <h2 className="mb-4 max-w-md text-3xl font-extrabold tracking-tight sm:text-4xl">
-              You already feel that something&apos;s not working.
+              Sound familiar?
             </h2>
             <p className="max-w-md text-[16.5px] text-slate-400">
-              With a 100-person team, the problem doesn&apos;t live in a spreadsheet. It lives in
-              these signals your team repeats every week:
+              Signs your process needs a second look — before anyone calls it a problem.
             </p>
           </div>
           <div>
             {[
-              { icon: '↻', text: 'The same tasks get redone two or three times before they\u2019re right.' },
-              { icon: '?', text: 'No one\u2019s quite sure who\u2019s responsible when something breaks.' },
-              { icon: '⧗', text: 'Deadlines slip "a little" all the time, and nobody questions it anymore.' },
-              { icon: '$', text: 'Hiring a consultancy sounds like months of waiting and a budget you don\u2019t have.' },
-            ].map((item, i, arr) => (
+              'Work gets redone — again.',
+              'No one owns it when it breaks.',
+              'Deadlines quietly slip.',
+              'Consultants cost too much, take too long.',
+            ].map((text, i, arr) => (
               <div
-                key={item.text}
-                className={`flex gap-4 border-t border-white/10 py-5 ${i === arr.length - 1 ? 'border-b' : ''}`}
+                key={text}
+                className={`flex items-center gap-4 border-t border-white/10 py-5 ${i === arr.length - 1 ? 'border-b' : ''}`}
               >
-                <div className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-lg border border-white/20 bg-white/5 text-[13px] text-slate-400">
-                  {item.icon}
-                </div>
-                <p className="pt-0.5 text-[15.5px] text-slate-300">{item.text}</p>
+                <span className="h-1.5 w-1.5 flex-shrink-0 rounded-full bg-blue-400" />
+                <p className="text-[17px] font-medium text-white">{text}</p>
               </div>
             ))}
           </div>
@@ -232,7 +249,7 @@ export default function Home() {
               How it works
             </div>
             <h2 className="mb-4 max-w-md text-3xl font-extrabold tracking-tight sm:text-4xl">
-              A senior consultant, turned into a guided flow.
+              Process improvement, powered by AI.
             </h2>
             <p className="max-w-md text-[16.5px] text-slate-400">
               The agent asks one question at a time, and shows you what it&apos;s building at
@@ -241,20 +258,34 @@ export default function Home() {
           </div>
           <div className="rounded-2xl border border-white/10 bg-[#141f38] p-2">
             {[
-              { n: '01', title: 'Context & goal', desc: 'Tell us which process is bothering you and what you want to achieve.', active: true },
+              { n: '01', title: 'Context & goal', desc: 'Tell us which process is bothering you and what you want to achieve.' },
               { n: '02', title: 'Where things stand today', desc: 'The agent maps the process and pinpoints where it\u2019s stuck.' },
               { n: '03', title: 'A better way to run it', desc: 'Proposes an improved version, realistic for your team.' },
               { n: '04', title: 'Action plan', desc: 'Turns every gap into steps, owners, and KPIs.' },
             ].map((row, i) => (
               <div
                 key={row.n}
-                className={`flex gap-4 rounded-xl px-4 py-[18px] ${i > 0 ? 'border-t border-white/10' : ''}`}
+                ref={(el) => { stepRefs.current[i] = el }}
+                data-step-index={i}
+                className={`flex gap-4 rounded-xl px-4 py-[18px] transition-colors duration-300 ${i > 0 ? 'border-t border-white/10' : ''} ${
+                  activeStep === i ? 'bg-blue-500/10' : ''
+                }`}
               >
-                <div className={`w-5 flex-shrink-0 pt-0.5 font-mono text-xs ${row.active ? 'text-cyan-400' : 'text-slate-500'}`}>
+                <div
+                  className={`w-5 flex-shrink-0 pt-0.5 font-mono text-xs transition-colors duration-300 ${
+                    activeStep === i ? 'text-cyan-400' : 'text-slate-500'
+                  }`}
+                >
                   {row.n}
                 </div>
                 <div>
-                  <div className="mb-1 text-[15px] font-semibold">{row.title}</div>
+                  <div
+                    className={`mb-1 text-[15px] font-semibold transition-colors duration-300 ${
+                      activeStep === i ? 'text-white' : 'text-slate-200'
+                    }`}
+                  >
+                    {row.title}
+                  </div>
                   <div className="text-[13.5px] leading-relaxed text-slate-400">{row.desc}</div>
                 </div>
               </div>

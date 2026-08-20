@@ -209,32 +209,46 @@ export default function Home() {
       </section>
 
       {/* ---------- PROBLEM ---------- */}
-      <section id="problem" className="border-t border-white/10 px-6 py-24 sm:px-8">
-        <div className="mx-auto grid max-w-5xl gap-14 sm:grid-cols-2">
-          <div>
+      <section id="problem" className="border-t border-white/10 px-6 py-28 sm:px-8">
+        <div className="mx-auto max-w-5xl">
+          <div className="mx-auto max-w-xl text-center">
             <div className="mb-4 font-mono text-xs uppercase tracking-widest text-blue-400">
               The problem
             </div>
-            <h2 className="mb-4 max-w-md text-3xl font-extrabold tracking-tight sm:text-4xl">
+            <h2 className="mb-4 text-3xl font-extrabold tracking-tight sm:text-4xl">
               Sound familiar?
             </h2>
-            <p className="max-w-md text-[16.5px] text-slate-400">
+            <p className="text-[16.5px] text-slate-400">
               Signs your process needs a second look — before anyone calls it a problem.
             </p>
           </div>
-          <div>
+
+          <div className="mt-14 grid gap-5 sm:grid-cols-2">
             {[
-              'Work gets redone — again.',
-              'No one owns it when it breaks.',
-              'Deadlines quietly slip.',
-              'Consultants cost too much, take too long.',
-            ].map((text, i, arr) => (
+              {
+                title: 'Work gets redone — again.',
+                desc: 'The same task, done twice, because nobody flagged the gap the first time.',
+              },
+              {
+                title: 'No one owns it when it breaks.',
+                desc: 'Something goes wrong, and the response is a group chat, not a fix.',
+              },
+              {
+                title: 'Deadlines quietly slip.',
+                desc: 'A few days here, a few days there — until it\u2019s just how things run.',
+              },
+              {
+                title: 'Consultants cost too much, take too long.',
+                desc: 'Weeks of scoping calls before anyone even looks at your process.',
+              },
+            ].map((item, i) => (
               <div
-                key={text}
-                className={`flex items-center gap-4 border-t border-white/10 py-5 ${i === arr.length - 1 ? 'border-b' : ''}`}
+                key={item.title}
+                className="rounded-2xl border border-white/10 bg-[#141f38] p-8 transition-colors hover:border-white/20"
               >
-                <span className="h-1.5 w-1.5 flex-shrink-0 rounded-full bg-blue-400" />
-                <p className="text-[17px] font-medium text-white">{text}</p>
+                <div className="mb-4 font-mono text-xs text-slate-500">0{i + 1}</div>
+                <div className="mb-2 text-xl font-bold leading-snug text-white">{item.title}</div>
+                <p className="text-[14.5px] leading-relaxed text-slate-400">{item.desc}</p>
               </div>
             ))}
           </div>

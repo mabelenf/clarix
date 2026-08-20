@@ -541,7 +541,7 @@ export default function Home() {
 
                   <div className="mb-4">
                     <label className="mb-1.5 block text-[13px] font-medium text-slate-300">
-                      Work email
+                      Email
                     </label>
                     <input
                       type="email"

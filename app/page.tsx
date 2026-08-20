@@ -29,13 +29,14 @@ export default function Home() {
     company: '',
     email: '',
     consent: false,
+    subscribeUpdates: false,
   })
 
   function openModal(newIntent: Intent) {
     setIntent(newIntent)
     setStep('form')
     setError('')
-    setForm({ firstName: '', lastName: '', role: '', company: '', email: '', consent: false })
+    setForm({ firstName: '', lastName: '', role: '', company: '', email: '', consent: false, subscribeUpdates: false })
     setModalOpen(true)
   }
 
@@ -57,6 +58,7 @@ export default function Home() {
           role: form.role,
           company: form.company,
           email: form.email,
+          subscribeUpdates: form.subscribeUpdates,
           intent,
         }),
       })
@@ -491,6 +493,20 @@ export default function Home() {
                           Privacy Policy
                         </Link>{' '}
                         and to be contacted by Clarix about my request.
+                      </span>
+                    </label>
+                  </div>
+
+                  <div className="mb-5">
+                    <label className="flex cursor-pointer items-start gap-2.5">
+                      <input
+                        type="checkbox"
+                        checked={form.subscribeUpdates}
+                        onChange={(e) => setForm({ ...form, subscribeUpdates: e.target.checked })}
+                        className="mt-0.5 h-4 w-4 flex-shrink-0 accent-blue-500"
+                      />
+                      <span className="text-[13px] leading-relaxed text-slate-400">
+                        Subscribe to receive email updates about Clarix.
                       </span>
                     </label>
                   </div>

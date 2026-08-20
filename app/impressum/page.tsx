@@ -75,6 +75,9 @@ export default function Impressum() {
           <Link href="/privacy" className="text-xs text-slate-500 hover:text-slate-300 transition-colors">
             Privacy Policy
           </Link>
+          <Link href="/terms" className="text-xs text-slate-500 hover:text-slate-300 transition-colors">
+            Terms of Use
+          </Link>
           <a href="#" id="open_preferences_center" className="text-xs text-slate-500 hover:text-slate-300 transition-colors">
             Cookie Preferences
           </a>

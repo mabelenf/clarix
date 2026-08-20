@@ -161,7 +161,7 @@ export default function Home() {
               onClick={() => openModal('session')}
               className="rounded-full border border-white/20 px-8 py-4 text-[15px] font-semibold transition-colors hover:border-white/35 hover:bg-white/5"
             >
-              Book a 45-min session
+              Book a free 45-min session
             </button>
           </div>
 

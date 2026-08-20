@@ -7,13 +7,6 @@ const VALID_INTENTS = ['diagnosis', 'session']
 
 export async function POST(req: Request) {
   try {
-    // TEMPORARY DEBUG LOG — safe, does not print the actual secret values.
-    console.log('ENV CHECK', {
-      hasUrl: !!process.env.SUPABASE_URL,
-      hasKey: !!process.env.SUPABASE_SERVICE_ROLE_KEY,
-      urlPreview: (process.env.SUPABASE_URL || 'MISSING').slice(0, 25),
-    })
-
     const supabaseUrl = process.env.SUPABASE_URL
     const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY
 
@@ -25,7 +18,7 @@ export async function POST(req: Request) {
     const supabase = createClient(supabaseUrl, supabaseKey)
 
     const body = await req.json()
-    const { firstName, lastName, role, company, email, intent } = body
+    const { firstName, lastName, role, company, email, intent, subscribeUpdates } = body
 
     if (!firstName || !lastName || !role || !company || !email) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
@@ -45,6 +38,7 @@ export async function POST(req: Request) {
       company: String(company).trim().slice(0, 200),
       email: String(email).trim().toLowerCase().slice(0, 320),
       intent,
+      subscribe_updates: Boolean(subscribeUpdates),
       submitted_at: new Date().toISOString(),
     })
 

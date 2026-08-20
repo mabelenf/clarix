@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, FormEvent } from 'react'
-import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 
 type Intent = 'diagnosis' | 'session'
@@ -15,7 +14,6 @@ const ROLE_OPTIONS = [
 ]
 
 export default function Home() {
-  const router = useRouter()
 
   const [modalOpen, setModalOpen] = useState(false)
   const [intent, setIntent] = useState<Intent>('diagnosis')
@@ -74,11 +72,7 @@ export default function Home() {
   }
 
   function handlePrimarySuccessAction() {
-    if (intent === 'diagnosis') {
-      router.push('/analyze')
-    } else {
-      closeModal()
-    }
+    closeModal()
   }
 
   return (
@@ -508,20 +502,18 @@ export default function Home() {
                   ✓
                 </div>
                 <h3 className="mb-2 text-xl font-bold">
-                  {intent === 'session'
-                    ? `Thanks for reaching out${submittedName ? ', ' + submittedName : ''}.`
-                    : `You're all set${submittedName ? ', ' + submittedName : ''}.`}
+                  Thanks for your interest{submittedName ? ', ' + submittedName : ''}.
                 </h3>
                 <p className="mb-6 text-sm leading-relaxed text-slate-400">
                   {intent === 'session'
-                    ? "We appreciate you booking time with us. You'll receive an email shortly with available time slots for your 45-minute session."
-                    : 'A complete diagnosis takes about 15–20 minutes. We recommend taking the time to answer thoughtfully — the more detail you share, the better the results for your business.'}
+                    ? "We appreciate you booking time with us. We'll be in touch shortly to schedule your 45-minute session."
+                    : "We'll be in touch shortly to schedule your diagnosis session."}
                 </p>
                 <button
                   onClick={handlePrimarySuccessAction}
                   className="w-full rounded-full bg-blue-500 py-4 text-[15px] font-semibold transition-colors hover:bg-blue-400"
                 >
-                  {intent === 'session' ? 'Done' : 'Continue to diagnosis →'}
+                  Done
                 </button>
               </div>
             )}

@@ -14,15 +14,22 @@ export default function Privacy() {
       <main className="flex-1 px-6 py-16">
         <div className="max-w-2xl mx-auto">
           <h1 className="text-3xl sm:text-4xl font-bold text-white mb-2">Privacy Policy</h1>
-          <p className="text-sm text-slate-500 mb-10">Last updated: July 2026</p>
+          <p className="text-sm text-slate-500 mb-10">Last updated: August 2026</p>
 
           <div className="space-y-8 text-slate-300 leading-relaxed text-sm">
             <section>
               <h2 className="text-lg font-semibold text-white mb-2">1. Who we are</h2>
               <p>
-                Clarix (&quot;we&quot;, &quot;our&quot;) provides an AI-powered process analysis tool.
-                This page explains what data is collected when you visit this site or use the
-                analysis tool, and how it is handled.
+                Clarix (&quot;we&quot;, &quot;our&quot;) provides an AI-powered business process
+                analysis tool. This policy explains what personal data we collect when you visit
+                this site, submit the contact form, or use the analysis tool, why we collect it,
+                and what rights you have over it.
+              </p>
+              <p className="mt-2">
+                Data controller: <span className="text-white">Eleve Company OÜ</span>, operating
+                under the name <span className="text-white">Clarix</span>. Registered address:{' '}
+                <span className="text-white">Sepapaja tn 6, 15551 Tallinn, Lasnamäe linnaosa, Estonia</span>.
+                Contact details are listed in Section 8 below.
               </p>
             </section>
 
@@ -30,36 +37,70 @@ export default function Privacy() {
               <h2 className="text-lg font-semibold text-white mb-2">2. What data we collect</h2>
               <ul className="list-disc list-inside space-y-2">
                 <li>
-                  <span className="text-white font-medium">Server logs:</span> our hosting
-                  provider (Vercel) automatically records IP addresses and basic request
-                  metadata (browser type, page visited, timestamp) as part of standard server
-                  operation.
+                  <span className="text-white font-medium">Contact form data:</span> when you
+                  click &quot;Start my diagnosis&quot; or &quot;Book a 45-min session&quot; and
+                  submit the form, we collect your first name, last name, role, company name, and
+                  work email address.
                 </li>
                 <li>
                   <span className="text-white font-medium">Analysis input:</span> if you use the
-                  &quot;Start New Analysis&quot; tool, the workflow description and any documents
-                  you upload are processed in order to generate your report. This content is sent
-                  to a third-party AI provider (Anthropic) for processing.
+                  process analysis tool, the workflow description, answers you provide, and any
+                  documents you upload are processed to generate your report. This content is sent
+                  to a third-party AI provider (Anthropic) for processing, and may include names
+                  or details about employees, clients, or business partners if you choose to
+                  include them in your answers. We ask that you avoid sharing personal data about
+                  third parties beyond what is necessary for the analysis.
                 </li>
                 <li>
-                  <span className="text-white font-medium">No account data:</span> this site does
-                  not currently require sign-up, so we do not collect names, emails, or passwords.
+                  <span className="text-white font-medium">Server logs:</span> our hosting
+                  provider (Vercel) automatically records IP addresses and basic request metadata
+                  (browser type, page visited, timestamp) as part of standard server operation.
+                </li>
+                <li>
+                  <span className="text-white font-medium">Cookies:</span> see our cookie banner
+                  and preferences center, linked in the footer, for details on the cookies used on
+                  this site and to manage your consent.
                 </li>
               </ul>
             </section>
 
             <section>
-              <h2 className="text-lg font-semibold text-white mb-2">3. How we use this data</h2>
+              <h2 className="text-lg font-semibold text-white mb-2">3. Why we collect it and our legal basis</h2>
+              <ul className="list-disc list-inside space-y-2">
+                <li>
+                  <span className="text-white font-medium">Contact form:</span> to respond to your
+                  request, schedule a session, or provide access to the diagnosis tool. Legal
+                  basis: your consent (given via the checkbox on the form) and, once we&apos;re in
+                  contact, steps taken at your request prior to entering into a contract (Art.
+                  6(1)(a) and (b) GDPR).
+                </li>
+                <li>
+                  <span className="text-white font-medium">Analysis input:</span> to generate the
+                  process report you requested. Legal basis: performance of a contract or steps
+                  taken at your request (Art. 6(1)(b) GDPR).
+                </li>
+                <li>
+                  <span className="text-white font-medium">Server logs:</span> to keep the site
+                  secure and operating correctly. Legal basis: legitimate interest (Art. 6(1)(f)
+                  GDPR).
+                </li>
+              </ul>
+            </section>
+
+            <section>
+              <h2 className="text-lg font-semibold text-white mb-2">4. How long we keep it</h2>
               <p>
-                Data submitted to the analysis tool is used solely to generate your process report.
-                Server logs are used only for security, debugging, and understanding basic site
-                traffic. We do not sell or share your data with advertisers.
+                Contact form submissions are kept for as long as needed to respond to your request
+                and, if you become a customer, for the duration of that relationship plus any
+                period required by law. Analysis input is retained only as long as needed to
+                generate and deliver your report, unless you ask us to keep it longer. You can
+                request earlier deletion at any time — see Section 6.
               </p>
             </section>
 
             <section>
-              <h2 className="text-lg font-semibold text-white mb-2">4. Third-party processors</h2>
-              <p>We rely on the following third-party services to operate this site:</p>
+              <h2 className="text-lg font-semibold text-white mb-2">5. Third parties who process your data</h2>
+              <p>We rely on the following processors to operate this site and deliver the service:</p>
               <ul className="list-disc list-inside space-y-2 mt-2">
                 <li>
                   <span className="text-white font-medium">Vercel</span> (hosting) —{' '}
@@ -73,7 +114,20 @@ export default function Privacy() {
                   </a>
                 </li>
                 <li>
-                  <span className="text-white font-medium">Anthropic</span> (AI processing) —{' '}
+                  <span className="text-white font-medium">Supabase</span> (database — stores
+                  contact form submissions) —{' '}
+                  <a
+                    href="https://supabase.com/privacy"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-400 hover:text-blue-300 underline"
+                  >
+                    Supabase Privacy Policy
+                  </a>
+                </li>
+                <li>
+                  <span className="text-white font-medium">Anthropic</span> (AI processing of
+                  analysis input) —{' '}
                   <a
                     href="https://www.anthropic.com/legal/privacy"
                     target="_blank"
@@ -83,25 +137,80 @@ export default function Privacy() {
                     Anthropic Privacy Policy
                   </a>
                 </li>
+                <li>
+                  <span className="text-white font-medium">TermsFeed</span> (cookie consent
+                  management) —{' '}
+                  <a
+                    href="https://www.termsfeed.com/privacy-policy/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-400 hover:text-blue-300 underline"
+                  >
+                    TermsFeed Privacy Policy
+                  </a>
+                </li>
               </ul>
-            </section>
-
-            <section>
-              <h2 className="text-lg font-semibold text-white mb-2">5. Your rights</h2>
-              <p>
-                If you are located in the EU/EEA, you have the right to access, correct, or
-                request deletion of your personal data under the GDPR. Since this site does not
-                store analysis submissions long-term beyond what is needed to generate your
-                report, most requests can be resolved simply by not submitting further data.
-                For any questions or requests, contact us at the email below.
+              <p className="mt-2">
+                Some of these providers may process data outside the EU/EEA, including in the
+                United States. Where this happens, we rely on the safeguards each provider offers
+                (such as Standard Contractual Clauses) to protect your data. We do not sell your
+                data or share it with advertisers.
               </p>
             </section>
 
             <section>
-              <h2 className="text-lg font-semibold text-white mb-2">6. Contact</h2>
+              <h2 className="text-lg font-semibold text-white mb-2">6. Your rights</h2>
               <p>
-                For privacy-related questions, reach out at{' '}
+                If you are located in the EU/EEA (or another jurisdiction with similar
+                protections), you have the right to:
+              </p>
+              <ul className="list-disc list-inside space-y-2 mt-2">
+                <li>Access the personal data we hold about you</li>
+                <li>Correct inaccurate or incomplete data</li>
+                <li>Request deletion of your data (&quot;right to be forgotten&quot;)</li>
+                <li>Restrict or object to certain processing</li>
+                <li>Receive your data in a portable format</li>
+                <li>Withdraw consent at any time, without affecting processing carried out before the withdrawal</li>
+                <li>
+                  Lodge a complaint with your local data protection authority — see{' '}
+                  <a
+                    href="https://edpb.europa.eu/about-edpb/about-edpb/members_en"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-400 hover:text-blue-300 underline"
+                  >
+                    a list of EU supervisory authorities
+                  </a>
+                </li>
+              </ul>
+              <p className="mt-2">
+                To exercise any of these rights, contact us using the details in Section 8. We
+                will respond within the timeframes required by applicable law.
+              </p>
+            </section>
+
+            <section>
+              <h2 className="text-lg font-semibold text-white mb-2">7. Children&apos;s privacy</h2>
+              <p>
+                This site and service are intended for business use by adults. We do not knowingly
+                collect personal data from children.
+              </p>
+            </section>
+
+            <section>
+              <h2 className="text-lg font-semibold text-white mb-2">8. Contact</h2>
+              <p>
+                For privacy-related questions or to exercise your rights, reach out at{' '}
                 <span className="text-white">consulting.mariabelenforti@gmail.com</span>.
+              </p>
+            </section>
+
+            <section>
+              <h2 className="text-lg font-semibold text-white mb-2">9. Changes to this policy</h2>
+              <p>
+                We may update this policy as the product evolves. We&apos;ll update the &quot;Last
+                updated&quot; date above when we do. Significant changes will be highlighted on
+                this page.
               </p>
             </section>
           </div>
@@ -110,12 +219,12 @@ export default function Privacy() {
 
       {/* Footer */}
       <footer className="border-t border-white/10 py-6 px-8 flex items-center justify-between">
-<span className="text-sm font-bold text-white">Clarix</span>
+        <span className="text-sm font-bold text-white">Clarix</span>
         <div className="flex items-center gap-4">
           <a href="#" id="open_preferences_center" className="text-xs text-slate-500 hover:text-slate-300 transition-colors">
             Cookie Preferences
           </a>
-          <p className="text-xs text-slate-600">© 2026 Clarix. All rights reserved.</p>
+          <p className="text-xs text-slate-600">© 2026 Eleve Company OÜ. All rights reserved.</p>
         </div>
       </footer>
     </div>

@@ -201,7 +201,7 @@ export default function Privacy() {
               <h2 className="text-lg font-semibold text-white mb-2">8. Contact</h2>
               <p>
                 For privacy-related questions or to exercise your rights, reach out at{' '}
-                <span className="text-white">consulting.mariabelenforti@gmail.com</span>.
+                <span className="text-white">eleve.eu@outlook.com</span>.
               </p>
             </section>
 

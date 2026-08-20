@@ -3,18 +3,17 @@
 import { createClient } from '@supabase/supabase-js'
 import { NextResponse } from 'next/server'
 
-// Server-only client. Uses the SERVICE ROLE key so it can write
-// even though RLS blocks the anon/public key. Never expose this
-// key with a NEXT_PUBLIC_ prefix or ship it to the browser.
-const supabase = createClient(
-  process.env.SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-)
-
 const VALID_INTENTS = ['diagnosis', 'session']
 
 export async function POST(req: Request) {
   try {
+    // Created here (inside the handler), not at module load time,
+    // so the build step doesn't try to connect before env vars exist.
+    const supabase = createClient(
+      process.env.SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY!
+    )
+
     const body = await req.json()
     const { firstName, lastName, role, company, email, intent } = body
 

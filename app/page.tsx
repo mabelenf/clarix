@@ -219,8 +219,7 @@ export default function Home() {
               Inefficiency is costing your business.
             </h2>
             <p className="text-[16.5px] text-slate-400">
-              Signs your process needs a second look — before anyone calls it a problem. Clarix
-              turns messy into a clear action plan.
+              Clarix turns messy into a clear action plan.
             </p>
           </div>
 

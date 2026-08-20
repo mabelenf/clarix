@@ -7,17 +7,26 @@ const VALID_INTENTS = ['diagnosis', 'session']
 
 export async function POST(req: Request) {
   try {
-    // Created here (inside the handler), not at module load time,
-    // so the build step doesn't try to connect before env vars exist.
-    const supabase = createClient(
-      process.env.SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!
-    )
+    // TEMPORARY DEBUG LOG — safe, does not print the actual secret values.
+    console.log('ENV CHECK', {
+      hasUrl: !!process.env.SUPABASE_URL,
+      hasKey: !!process.env.SUPABASE_SERVICE_ROLE_KEY,
+      urlPreview: (process.env.SUPABASE_URL || 'MISSING').slice(0, 25),
+    })
+
+    const supabaseUrl = process.env.SUPABASE_URL
+    const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+
+    if (!supabaseUrl || !supabaseKey) {
+      console.error('Missing Supabase env vars at runtime')
+      return NextResponse.json({ error: 'Server misconfiguration' }, { status: 500 })
+    }
+
+    const supabase = createClient(supabaseUrl, supabaseKey)
 
     const body = await req.json()
     const { firstName, lastName, role, company, email, intent } = body
 
-    // Basic server-side validation — never trust the client.
     if (!firstName || !lastName || !role || !company || !email) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
     }

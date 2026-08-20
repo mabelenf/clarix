@@ -351,7 +351,18 @@ export default function Home() {
 
       {/* ---------- FOOTER ---------- */}
       <footer className="border-t border-white/10 px-6 py-8 text-center text-[13px] text-slate-500 sm:px-8">
-        Clarix — AI-powered process analysis for SMEs
+        <p className="mb-3">Clarix — AI-powered process analysis for SMEs</p>
+        <div className="flex flex-wrap items-center justify-center gap-4">
+          <Link href="/privacy" className="hover:text-slate-300 transition-colors">
+            Privacy Policy
+          </Link>
+          <Link href="/impressum" className="hover:text-slate-300 transition-colors">
+            Impressum
+          </Link>
+          <a href="#" id="open_preferences_center" className="hover:text-slate-300 transition-colors">
+            Cookie Preferences
+          </a>
+        </div>
       </footer>
 
       {/* ---------- LEAD FORM MODAL ---------- */}

@@ -219,7 +219,7 @@ export default function Home() {
               Inefficiency Is Expensive
             </h2>
             <p className="text-[16.5px] text-slate-400">
-              Clarix turns messy into a clear action plan.
+              Operational issues can cost you thousands per month.
             </p>
           </div>
 
@@ -227,7 +227,7 @@ export default function Home() {
             {[
               {
                 title: 'Messy, Unclear Processes',
-                desc: 'Nobody can walk you through the process start to finish — everyone just knows their own part.',
+                desc: 'Manual steps, no alerts, bottlenecks, and frequent errors.',
               },
               {
                 title: 'No Expertise, No Methodology',
@@ -235,11 +235,11 @@ export default function Home() {
               },
               {
                 title: 'Missed Deadlines',
-                desc: 'Tasks and deadlines that were planned rarely get met on time.',
+                desc: 'Late orders, slipped timelines, service that falls short of what was promised.',
               },
               {
                 title: 'The Cost Behind This',
-                desc: 'Companies lose up to 20\u201330% of annual revenue to inefficient processes',
+                desc: 'Companies lose up to 20\u201330% of annual revenue to inefficient processes.',
               },
             ].map((item, i) => (
               <div
@@ -268,8 +268,7 @@ export default function Home() {
               Process improvement, powered by AI.
             </h2>
             <p className="max-w-md text-[16.5px] text-slate-400">
-              The agent asks one question at a time, and shows you what it&apos;s building at
-              every step so you can validate before moving on.
+              Clarix turns messy into a clear action plan.
             </p>
           </div>
           <div className="rounded-2xl border border-white/10 bg-[#141f38] p-2">

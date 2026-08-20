@@ -356,6 +356,9 @@ export default function Home() {
           <Link href="/privacy" className="hover:text-slate-300 transition-colors">
             Privacy Policy
           </Link>
+          <Link href="/terms" className="hover:text-slate-300 transition-colors">
+            Terms of Use
+          </Link>
           <Link href="/impressum" className="hover:text-slate-300 transition-colors">
             Impressum
           </Link>

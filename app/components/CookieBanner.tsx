@@ -1,24 +1,25 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { getConsent, setConsent } from "../lib/consent";
 
 export default function CookieBanner() {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    const consent = localStorage.getItem("clarix_cookie_consent");
+    const consent = getConsent();
     if (!consent) {
       setVisible(true);
     }
   }, []);
 
   const accept = () => {
-    localStorage.setItem("clarix_cookie_consent", "accepted");
+    setConsent("accepted");
     setVisible(false);
   };
 
   const decline = () => {
-    localStorage.setItem("clarix_cookie_consent", "declined");
+    setConsent("declined");
     setVisible(false);
   };
 

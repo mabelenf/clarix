@@ -26,9 +26,8 @@ export default function Privacy() {
                 and what rights you have over it.
               </p>
               <p className="mt-2">
-                Data controller: <span className="text-white">Clarix</span>, operating
-                under the name <span className="text-white">Clarix</span>. Registered address:{' '}
-                <span className="text-white"></span>.
+                Data controller: <span className="text-white">Maria Belén Forti</span>, operating
+                under the name <span className="text-white">Clarix</span>.
                 Contact details are listed in Section 8 below.
               </p>
             </section>
@@ -104,7 +103,7 @@ export default function Privacy() {
               <ul className="list-disc list-inside space-y-2 mt-2">
                 <li>
                   <span className="text-white font-medium">Vercel</span> (hosting) —{' '}
-                  <a
+                  
                     href="https://vercel.com/legal/privacy-policy"
                     target="_blank"
                     rel="noopener noreferrer"
@@ -116,7 +115,7 @@ export default function Privacy() {
                 <li>
                   <span className="text-white font-medium">Supabase</span> (database — stores
                   contact form submissions) —{' '}
-                  <a
+                  
                     href="https://supabase.com/privacy"
                     target="_blank"
                     rel="noopener noreferrer"
@@ -128,7 +127,7 @@ export default function Privacy() {
                 <li>
                   <span className="text-white font-medium">Anthropic</span> (AI processing of
                   analysis input) —{' '}
-                  <a
+                  
                     href="https://www.anthropic.com/legal/privacy"
                     target="_blank"
                     rel="noopener noreferrer"
@@ -140,7 +139,7 @@ export default function Privacy() {
                 <li>
                   <span className="text-white font-medium">TermsFeed</span> (cookie consent
                   management) —{' '}
-                  <a
+                  
                     href="https://www.termsfeed.com/privacy-policy/"
                     target="_blank"
                     rel="noopener noreferrer"
@@ -173,7 +172,7 @@ export default function Privacy() {
                 <li>Withdraw consent at any time, without affecting processing carried out before the withdrawal</li>
                 <li>
                   Lodge a complaint with your local data protection authority — see{' '}
-                  <a
+                  
                     href="https://edpb.europa.eu/about-edpb/about-edpb/members_en"
                     target="_blank"
                     rel="noopener noreferrer"
@@ -201,7 +200,7 @@ export default function Privacy() {
               <h2 className="text-lg font-semibold text-white mb-2">8. Contact</h2>
               <p>
                 For privacy-related questions or to exercise your rights, reach out at{' '}
-                <span className="text-white">clarix</span>.
+                <span className="text-white">forti.belen@gmail.com</span>.
               </p>
             </section>
 
@@ -224,7 +223,7 @@ export default function Privacy() {
           <a href="#" id="open_preferences_center" className="text-xs text-slate-500 hover:text-slate-300 transition-colors">
             Cookie Preferences
           </a>
-          <p className="text-xs text-slate-600"> Clarix. All rights reserved.</p>
+          <p className="text-xs text-slate-600">© 2026 Clarix. All rights reserved.</p>
         </div>
       </footer>
     </div>

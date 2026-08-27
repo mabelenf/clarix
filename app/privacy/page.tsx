@@ -26,9 +26,9 @@ export default function Privacy() {
                 and what rights you have over it.
               </p>
               <p className="mt-2">
-                Data controller: <span className="text-white">Eleve Company OÜ</span>, operating
+                Data controller: <span className="text-white">Clarix</span>, operating
                 under the name <span className="text-white">Clarix</span>. Registered address:{' '}
-                <span className="text-white">Sepapaja tn 6, 15551 Tallinn, Lasnamäe linnaosa, Estonia</span>.
+                <span className="text-white"></span>.
                 Contact details are listed in Section 8 below.
               </p>
             </section>
@@ -201,7 +201,7 @@ export default function Privacy() {
               <h2 className="text-lg font-semibold text-white mb-2">8. Contact</h2>
               <p>
                 For privacy-related questions or to exercise your rights, reach out at{' '}
-                <span className="text-white">eleve.eu@outlook.com</span>.
+                <span className="text-white">clarix</span>.
               </p>
             </section>
 
@@ -224,7 +224,7 @@ export default function Privacy() {
           <a href="#" id="open_preferences_center" className="text-xs text-slate-500 hover:text-slate-300 transition-colors">
             Cookie Preferences
           </a>
-          <p className="text-xs text-slate-600">© 2026 Eleve Company OÜ. All rights reserved.</p>
+          <p className="text-xs text-slate-600"> Clarix. All rights reserved.</p>
         </div>
       </footer>
     </div>

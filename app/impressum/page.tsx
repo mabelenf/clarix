@@ -20,11 +20,8 @@ export default function Impressum() {
             <section>
               <h2 className="text-lg font-semibold text-white mb-2">Company</h2>
               <p>
-                Eleve Company OÜ
                 <br />
-                Sepapaja tn 6, 15551 Tallinn
                 <br />
-                Lasnamäe linnaosa, Estonia
               </p>
             </section>
 
@@ -36,7 +33,7 @@ export default function Impressum() {
             <section>
               <h2 className="text-lg font-semibold text-white mb-2">Contact</h2>
               <p>
-                Email: <span className="text-white">eleve.eu@outlook.com</span>
+                Email: <span className="text-white">clarix</span>
               </p>
             </section>
 
@@ -81,7 +78,7 @@ export default function Impressum() {
           <a href="#" id="open_preferences_center" className="text-xs text-slate-500 hover:text-slate-300 transition-colors">
             Cookie Preferences
           </a>
-          <p className="text-xs text-slate-600">© 2026 Eleve Company OÜ. All rights reserved.</p>
+          <p className="text-xs text-slate-600">© 2026 Clarix. All rights reserved.</p>
         </div>
       </footer>
     </div>

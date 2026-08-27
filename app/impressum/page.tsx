@@ -20,8 +20,9 @@ export default function Impressum() {
             <section>
               <h2 className="text-lg font-semibold text-white mb-2">Company</h2>
               <p>
+                Maria Belén Forti
                 <br />
-                <br />
+                [TU DIRECCIÓN POSTAL ACÁ]
               </p>
             </section>
 
@@ -33,7 +34,7 @@ export default function Impressum() {
             <section>
               <h2 className="text-lg font-semibold text-white mb-2">Contact</h2>
               <p>
-                Email: <span className="text-white">clarix</span>
+                Email: <span className="text-white">forti.belen@gmail.com</span>
               </p>
             </section>
 
@@ -49,7 +50,7 @@ export default function Impressum() {
               <h2 className="text-lg font-semibold text-white mb-2">Dispute resolution</h2>
               <p>
                 The European Commission provides a platform for online dispute resolution (OS):{' '}
-                <a
+                
                   href="https://ec.europa.eu/consumers/odr/"
                   target="_blank"
                   rel="noopener noreferrer"
